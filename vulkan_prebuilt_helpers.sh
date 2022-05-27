@@ -8,19 +8,29 @@
 # $ VULKAN_SDK_VERSION=1.3.204.0 download_linux    # fetches vulkan_sdk.tar.gz
 # $ VULKAN_SDK=$PWD/VULKAN_SDK install_linux       # installs
 
+function _url_filename() {
+  case $1 in
+    mac) echo vulkansdk-macos-$VULKAN_SDK_VERSION.dmg ;;
+    linux) echo vulkansdk-linux-x86_64-$VULKAN_SDK_VERSION.tar.gz ;;
+    windows) echo VulkanSDK-$VULKAN_SDK_VERSION-Installer.exe ;;
+    *) echo "unknown $1" >&2 ; exit 9 ;;
+  esac
+}
+
 function _os_filename() {
   case $1 in
-    mac) echo vulkan_sdk.dmg ;;
-    linux) echo vulkan_sdk.tar.gz ;;
-    windows) echo vulkan_sdk.exe ;;
+    mac) echo vulkansdk.dmg ;;
+    linux) echo vulkansdk.tar.gz ;;
+    windows) echo VulkanSDK.exe ;;
     *) echo "unknown $1" >&2 ; exit 9 ;;
   esac
 }
 
 function download_vulkan_installer() {
   local os=$1
+  local url_filename=$(_url_filename $os)
   local filename=$(_os_filename $os)
-  local url=https://sdk.lunarg.com/sdk/download/$VULKAN_SDK_VERSION/$os/$filename?Human=true
+  local url=https://sdk.lunarg.com/sdk/download/$VULKAN_SDK_VERSION/$os/$url_filename?Human=true
   echo "_download_os_installer $os $filename $url" >&2
   if [[ -f $filename ]] ; then
     echo "using cached: $filename"
